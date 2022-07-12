@@ -1,4 +1,4 @@
-#include "include/tensorflowlite.h"
+#include "tensorflowlite.h"
 
 
 template <typename T>
@@ -104,9 +104,9 @@ Tensorflowlite::Tensorflowlite(int tpu_num,const char* model_f, const char* mode
     for(unsigned int i=0;i<interpreter->outputs().size();i++)
         outputs.push_back(interpreter->tensor(interpreter->outputs()[i]));
 
-    int wanted_height   = dims->data[1];
-    int wanted_width    = dims->data[2];
-    int wanted_channels = dims->data[3];
+    wanted_height   = dims->data[1];
+    wanted_width    = dims->data[2];
+    wanted_channels = dims->data[3];
 
     if (verbose)
     {
@@ -186,7 +186,7 @@ void Tensorflowlite::runClass(){
     cv::Mat input = frame.clone();
 
     cv::cvtColor(input, input, cv::COLOR_BGR2RGB);
-    cv::resize(input, input, cv::Size(MODEL_WIDTH, MODEL_HEIGHT));
+    cv::resize(input, input, cv::Size(wanted_width, wanted_height));
     std::vector<uint8_t> inputData(input.data, input.data + (input.cols * input.rows * input.elemSize()));
     const auto& tPreProcess1 = std::chrono::steady_clock::now();
 
@@ -403,7 +403,7 @@ void Tensorflowlite::runDet()
     cv::Mat input = frame.clone();
 
     cv::cvtColor(input, input, cv::COLOR_BGR2RGB);
-    cv::resize(input, input, cv::Size(MODEL_WIDTH_DET, MODEL_HEIGHT_DET));
+    cv::resize(input, input, cv::Size(wanted_width, wanted_height));
     std::vector<uint8_t> inputData(input.data, input.data + (input.cols * input.rows * input.elemSize()));
     const auto& tPreProcess1 = std::chrono::steady_clock::now();
 
